@@ -1,6 +1,7 @@
 ---
 - hosts: hub
   connection: local
+  gather_facts: no
   vars:
     resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
     vnet_var: "vn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
@@ -81,6 +82,7 @@
 
 - hosts: spokes
   connection: local
+  gather_facts: no
   vars:
     resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
     vnet_var: "vn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"

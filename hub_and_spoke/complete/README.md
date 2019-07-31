@@ -23,5 +23,7 @@ az group list --output table
 Short-cutting to interesting tasks:
 
 ```bash
-ansible-playbook -i ./inventory/networks.yml ./network.yml --step --start-at-task='Networks | Create spoke to hub virtual network peering'
+ansible-playbook -i ./inventory/networks.yml ./network.yml \
+--step \
+--start-at-task='Networks | Create spoke to hub virtual network peering'
 ```
