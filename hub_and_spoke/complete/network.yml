@@ -150,9 +150,9 @@
     vars:
       local_resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
       local_vnet_var: "vn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
-      local_peer_var: "pr-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-hub-1"
-      remote_vnet_var: "vn-az-we-hub-hndovr-ntw-1"
-      remote_resource_group_var: "rg-az-we-hub-hndovr-ntw-1"
+      local_peer_var: "pr-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-hub1-1"
+      remote_vnet_var: "vn-az-we-hub1-hndovr-ntw-1"
+      remote_resource_group_var: "rg-az-we-hub1-hndovr-ntw-1"
     azure_rm_virtualnetworkpeering: 
       resource_group: "{{ local_resource_group_var }}"
       name: "{{ local_peer_var }}"
@@ -167,9 +167,9 @@
 
   - name: Networks | Create hub to spoke virtual network peering
     vars:
-      local_resource_group_var: "rg-az-we-hub-hndovr-ntw-1"
-      local_vnet_var: "vn-az-we-hub-hndovr-ntw-1"
-      local_peer_var: "pr-az-we-hub-hndovr-{{ production_state }}{{ instance }}-1"
+      local_resource_group_var: "rg-az-we-hub1-hndovr-ntw-1"
+      local_vnet_var: "vn-az-we-hub1-hndovr-ntw-1"
+      local_peer_var: "pr-az-we-hub1-hndovr-{{ production_state }}{{ instance }}-1"
       remote_vnet_var: "vn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
       remote_resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
     azure_rm_virtualnetworkpeering: 
