@@ -1,0 +1,33 @@
+---
+all:
+  children:
+    hub:
+      hosts: 
+        hub1:
+    spokes:
+      children:
+        dev:
+          hosts: 
+            dev1:
+            dev2:
+        cni:
+          hosts: 
+            cni1:
+        qua:
+          hosts: 
+            qua1:
+        mod:
+          hosts: 
+            mod1:
+        prp:
+          hosts: 
+            prp1:
+        prd:
+          hosts: 
+            prd1:
+        psp:
+          hosts: 
+            psp1:
+        nik:
+          hosts: 
+            nik1:

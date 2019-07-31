@@ -1,0 +1,185 @@
+---
+- hosts: hub
+  connection: local
+  vars:
+    resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+    vnet_var: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+  tasks:
+  - name: Networks | Create hub resource group
+    azure_rm_resourcegroup:
+      name: "{{ resource_group_var }}"
+      location: "{{ location }}"
+      tags:
+          env: "{{ production_state }}"
+
+  - name: Networks | Create hub virtual networks
+    azure_rm_virtualnetwork:
+      name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefixes_cidr: "{{ address_prefixes_cidr }}"
+      dns_servers: "{{ dns_servers}}"
+
+  - name: Networks | Create hub route tables
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      vnet_var: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+    azure_rm_routetable:
+      name: "{{ item.route_table }}"
+      resource_group: "{{ resource_group_var }}"
+    with_items:  "{{ subnets_list }}"
+
+  - name: Networks | Add Internet routes to public subnet route tables 
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+    azure_rm_route:
+      resource_group: "{{ resource_group_var }}"
+      address_prefix: "{{ item.address_prefix }}"
+      next_hop_type: "{{ item.next_hop_type }}"
+      name: "{{ item.route_name }}"
+      route_table_name: "{{ item.route_table_name }}"
+      state: "{{ item.state }}"
+    with_items: '{{ route_list_internet }}'
+
+  - name: Networks | Add appliance routes to JMP route table 
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-jmp-1"
+    azure_rm_route:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ item.name }}"
+      address_prefix: "{{ item.address_prefix }}"
+      next_hop_type: "{{ item.next_hop_type }}"
+      next_hop_ip_address: "{{ item.next_hop_ip_address }}"
+      route_table_name: "{{ route_table_var }}"
+      state: "{{ item.state }}"
+    with_items: '{{ route_list_jmp }}'
+  
+  - name: Networks | Add appliance routes to INF route table 
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1"
+    azure_rm_route:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ item.name }}"
+      address_prefix: "{{ item.address_prefix }}"
+      next_hop_type: "{{ item.next_hop_type }}"
+      next_hop_ip_address: "{{ item.next_hop_ip_address }}"
+      route_table_name: "{{ route_table_var }}"
+      state: "{{ item.state }}"
+    with_items: '{{route_list_inf }}'
+
+  # Note the subnet configuration associates the route table with it
+  - name: Networks | Create hub subnets
+    azure_rm_subnet:
+      name: "{{ item.name }}"
+      virtual_network_name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefix_cidr: "{{ item.subnet }}"
+      route_table: "{{ item.route_table }}"
+    with_items: "{{ subnets_list }}"
+
+- hosts: spokes
+  connection: local
+  vars:
+    resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+    vnet_var: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+  tasks:
+  - name: Networks | Create spoke resource groups
+    azure_rm_resourcegroup:
+      name: "{{ resource_group_var }}"
+      location: "{{ location }}"
+      tags:
+          env: "{{ production_state }}"
+
+  - name: Networks | Create spoke virtual networks
+    azure_rm_virtualnetwork:
+      name: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      resource_group: "{{ resource_group_var }}"
+      address_prefixes_cidr: "{{ address_prefixes_cidr }}"
+      dns_servers: "{{ dns_servers}}"
+
+  - name: Networks | Create spoke route table
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      vnet_var: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+    azure_rm_routetable:
+      name: "{{ item.route_table }}"
+      resource_group: "{{ resource_group_var }}"
+    with_items:  "{{ subnets_list }}"
+
+  - name: Networks | Add appliance routes to K8S route table 
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-k8s-1"
+    azure_rm_route:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ item.name }}"
+      address_prefix: "{{ item.address_prefix }}"
+      next_hop_type: "{{ item.next_hop_type }}"
+      next_hop_ip_address: "{{ item.next_hop_ip_address }}"
+      route_table_name: "{{ route_table_var }}"
+      state: "{{ item.state }}"
+    with_items: '{{ route_list_k8s }}'
+
+  - name: Networks | Add appliance routes to INF route table 
+    vars:
+      resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1"
+    azure_rm_route:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ item.name }}"
+      address_prefix: "{{ item.address_prefix }}"
+      next_hop_type: "{{ item.next_hop_type }}"
+      next_hop_ip_address: "{{ item.next_hop_ip_address }}"
+      route_table_name: "{{ route_table_var }}"
+      state: "{{ item.state }}"
+    with_items: '{{ route_list_inf }}'
+
+  - name: Networks | Create spoke subnets
+    azure_rm_subnet:
+      name: "{{ item.name }}"
+      virtual_network_name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefix_cidr: "{{ item.subnet }}"
+      route_table: "{{ item.route_table }}"
+    with_items: "{{ subnets_list }}"
+
+  - name: Networks | Create spoke to hub virtual network peering
+    vars:
+      local_resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      local_vnet_var: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      local_peer_var: "pr-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-hub-1"
+      remote_vnet_var: "vn-az-we-hub-hndovr-ntw-1"
+      remote_resource_group_var: "rg-az-we-hub-hndovr-ntw-1"
+    azure_rm_virtualnetworkpeering: 
+      resource_group: "{{ local_resource_group_var }}"
+      name: "{{ local_peer_var }}"
+      virtual_network: "{{ local_vnet_var }}"
+      remote_virtual_network:
+        resource_group: "{{ remote_resource_group_var }}"
+        name: "{{ remote_vnet_var }}"
+      allow_virtual_network_access: false
+      allow_forwarded_traffic: true
+      #Uncomment if a Microsoft vpn gateway is deployed
+      #use_remote_gateways: true
+
+  - name: Networks | Create hub to spoke virtual network peering
+    vars:
+      local_resource_group_var: "rg-az-we-hub-hndovr-ntw-1"
+      local_vnet_var: "vn-az-we-hub-hndovr-ntw-1"
+      local_peer_var: "pr-az-we-hub-hndovr-{{ production_state }}-1"
+      remote_vnet_var: "vn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+      remote_resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-{{ group }}-1"
+    azure_rm_virtualnetworkpeering: 
+      resource_group: "{{ local_resource_group_var }}"
+      name: "{{ local_peer_var }}"
+      virtual_network: "{{ local_vnet_var }}"
+      remote_virtual_network:
+        resource_group: "{{ remote_resource_group_var }}"
+        name: "{{ remote_vnet_var }}"
+      allow_virtual_network_access: false
+      allow_forwarded_traffic: true
+      #Uncomment if a Microsoft vpn gateway is deployed
+      #allow_gateway_transit: true

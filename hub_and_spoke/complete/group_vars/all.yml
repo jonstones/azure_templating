@@ -1,0 +1,13 @@
+# Backhaul Firewall Pair
+fwb_outside: '10.157.255.4'
+fwb_inside: '10.157.250.4'
+# Outbound Firewall Pair (internet access)
+fwo_outside: '10.157.254.4'
+fwo_inside: '10.157.249.4'
+# Inbound Firewall Pair (internet hosting)
+fwi_outside: '10.157.253.4'
+fwi_inside: '10.157.248.4'
+# Standard DNS Servers used by all devices
+dns_servers:
+- 10.159.195.41
+- 10.159.195.51

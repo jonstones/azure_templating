@@ -1,0 +1,58 @@
+ecosystem: hndovr
+production_state: prd
+instance: 1
+location: westeurope
+location_code: we
+group: ntw
+address_prefixes_cidr: 
+- 10.158.160.0/19
+# Subnet and route tables
+subnets_list:
+- subnet1:
+  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-k8s-1'
+  subnet: '10.158.160.0/21'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-k8s-1'
+- subnet2:
+  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  subnet: '10.158.168.0/24'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+# K8s subnet appliance routes
+route_list_k8s:
+- route1: 
+  name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-int-1'
+  address_prefix: '0.0.0.0/0'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ fwb_inside }}'
+  state: present
+- route2: 
+  name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  address_prefix: '10.158.168.0/24'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ fwb_inside }}'
+  state: present
+- route3: 
+  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  address_prefix: '10.157.193.0/24'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ fwb_inside }}'
+  state: present
+# Inf subnet appliance routes
+route_list_inf:
+- route1: 
+  name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-int-1'
+  address_prefix: '0.0.0.0/0'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ fwb_inside }}'
+  state: present
+- route2: 
+  name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-k8s-1'
+  address_prefix: '10.158.160.0/21'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ fwb_inside }}'
+  state: present
+- route3: 
+  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  address_prefix: '10.157.193.0/24'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ fwb_inside }}'
+  state: present
