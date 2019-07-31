@@ -11,50 +11,50 @@ address_prefixes_cidr:
 # Subnet and route tables
 subnets_list:
 - subnet1:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-1'
   subnet: '10.157.255.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-1'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-1'
 - subnet2:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-2'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-2'
   subnet: '10.157.254.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-2'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-2'
 - subnet3:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-3'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-3'
   subnet: '10.157.253.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-3'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-3'
 - subnet11:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-ext-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-ext-1'
   subnet: '10.157.192.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-ext-1'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-ext-1'
 - subnet12:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
   subnet: '10.157.193.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
 - subnet13:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-mgt-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-mgt-1'
   subnet: '10.157.194.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-mgt-1'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-mgt-1'
 - subnet14:
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-jmp-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-jmp-1'
   subnet: '10.157.195.0/24'
-  route_table: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-jmp-1'
+  route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-jmp-1'
 # Internet routes
 route_list_internet:
 - put1:
-  route_table_name: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-1'
-  route_name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-int-1'
+  route_table_name: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-1'
+  route_name: 'sn-it-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-int-1'
   address_prefix: '0.0.0.0/0'
   next_hop_type: 'internet'
   state: present
 - put2:
-  route_table_name: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-2'
-  route_name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-int-2'
+  route_table_name: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-2'
+  route_name: 'sn-it-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-int-2'
   address_prefix: '0.0.0.0/0'
   next_hop_type: 'internet'
   state: present
 - put3:
-  route_table_name: 'rt-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-put-3'
-  route_name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-int-3'
+  route_table_name: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-3'
+  route_name: 'sn-it-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-int-3'
   address_prefix: '0.0.0.0/0'
   next_hop_type: 'internet'
   state: present
@@ -85,19 +85,19 @@ route_list_mgt:
 # Jump subnet appliance routes
 route_list_jmp:
 - route1: 
-  name: 'sn-it-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-int-1'
+  name: 'sn-it-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-int-1'
   address_prefix: '0.0.0.0/0'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present
 - route2: 
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-mgt-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-mgt-1'
   address_prefix: '10.157.192.0/24'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present
 - route3: 
-  name: 'sn-az-{{ location_code }}-{{ production_state }}-{{ ecosystem }}-inf-1'
+  name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
   address_prefix: '10.157.193.0/24'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'

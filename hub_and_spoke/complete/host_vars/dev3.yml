@@ -1,20 +1,20 @@
 ecosystem: hndovr
 production_state: dev
-instance: 2
+instance: 3
 location: westeurope
 location_code: we
 group: ntw
 address_prefixes_cidr: 
-- 10.161.0.0/19
+- 10.162.0.0/19
 # Subnet and route tables
 subnets_list:
 - subnet1:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-k8s-1'
-  subnet: '10.161.0.0/21'
+  subnet: '10.162.0.0/21'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-k8s-1'
 - subnet2:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
-  subnet: '10.161.8.0/24'
+  subnet: '10.162.8.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
 # K8s subnet appliance routes
 route_list_k8s:
@@ -26,7 +26,7 @@ route_list_k8s:
   state: present
 - route2: 
   name: 'sn-it-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
-  address_prefix: '10.161.8.0/24'
+  address_prefix: '10.162.8.0/24'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present
@@ -46,7 +46,7 @@ route_list_inf:
   state: present
 - route2: 
   name: 'sn-it-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-k8s-1'
-  address_prefix: '10.161.0.0/21'
+  address_prefix: '10.162.0.0/21'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present
