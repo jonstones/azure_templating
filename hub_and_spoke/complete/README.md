@@ -9,8 +9,8 @@ ansible-playbook -i ./inventory/networks.yml ./network.yml
 Clean up between runs to iteratively test:
 
 ```bash
-az group delete --name rg-az-we-hub1-hndovr-ntw-1 --yes ; \
-for item in `az group list --output table | grep hndovr | awk '{ print $1 }'` ; \
+az group delete --name rg-az-we-hub1-dc1ops-ntw-1 --yes ; \
+for item in `az group list --output table | grep dc1ops | awk '{ print $1 }'` ; \
 do az group delete --name ${item} --yes --no-wait ; done
 ```
 
@@ -27,3 +27,6 @@ ansible-playbook -i ./inventory/networks.yml ./network.yml \
 --step \
 --start-at-task='Networks | Create spoke to hub virtual network peering'
 ```
+
+## Caveats
+

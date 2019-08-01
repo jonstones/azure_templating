@@ -11,5 +11,5 @@ fwi_outside: '172.18.253.4'
 fwi_inside: '172.18.248.4'
 # Standard DNS Servers used by all devices
 dns_servers:
-- 172.18.193.41
-- 172.18.193.51
+- 172.18.0.41
+- 172.18.0.51

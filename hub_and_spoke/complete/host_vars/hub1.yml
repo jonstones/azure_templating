@@ -1,5 +1,4 @@
 # General variables used throughout
-ecosystem: hndovr
 production_state: hub
 instance: 1
 location: westeurope
@@ -7,36 +6,36 @@ location_code: we
 group: ntw
 # Aggregates used in vnet
 address_prefixes_cidr: 
-- 10.157.192.0/18
+- 172.18.192.0/18
 # Subnet and route tables
 subnets_list:
 - subnet1:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-1'
-  subnet: '10.157.255.0/24'
+  subnet: '172.18.255.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-1'
 - subnet2:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-2'
-  subnet: '10.157.254.0/24'
+  subnet: '172.18.254.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-2'
 - subnet3:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-3'
-  subnet: '10.157.253.0/24'
+  subnet: '172.18.253.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-put-3'
 - subnet11:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-ext-1'
-  subnet: '10.157.192.0/24'
+  subnet: '172.18.192.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-ext-1'
 - subnet12:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
-  subnet: '10.157.193.0/24'
+  subnet: '172.18.193.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
 - subnet13:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-mgt-1'
-  subnet: '10.157.194.0/24'
+  subnet: '172.18.194.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-mgt-1'
 - subnet14:
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-jmp-1'
-  subnet: '10.157.195.0/24'
+  subnet: '172.18.195.0/24'
   route_table: 'rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-jmp-1'
 # Internet routes
 route_list_internet:
@@ -92,13 +91,13 @@ route_list_jmp:
   state: present
 - route2: 
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-mgt-1'
-  address_prefix: '10.157.192.0/24'
+  address_prefix: '172.18.192.0/24'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present
 - route3: 
   name: 'sn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-inf-1'
-  address_prefix: '10.157.193.0/24'
+  address_prefix: '172.18.193.0/24'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present
@@ -113,7 +112,7 @@ route_list_put:
 route_list_ttr:
 - route1: 
   name: 'infrastructure'
-  address_prefix: '10.157.193.0/24'
+  address_prefix: '172.18.193.0/24'
   next_hop_type: virtual_appliance
   next_hop_ip_address: '{{ fwb_inside }}'
   state: present

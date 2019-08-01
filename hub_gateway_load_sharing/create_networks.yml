@@ -1,0 +1,21 @@
+---
+- hosts: azure
+  connection: local
+  gather_facts: no
+  vars:
+    resource_group_var: "dc1-networks"
+    vnet_var: "dc1-vnets"
+  tasks:
+  - name: Create central resource group for networking in Azure
+    azure_rm_resourcegroup:
+      name: "{{ resource_group_var }}"
+      location: "{{ location }}"
+      tags:
+          env: "dc1"
+
+  - name: Create central virtual networks
+    azure_rm_virtualnetwork:
+      name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefixes_cidr: "{{ address_prefixes_cidr }}"
+      dns_servers: "{{ dns_servers }}"

@@ -1,0 +1,20 @@
+# General variables used throughout
+production_state: dc1
+instance: 1
+location: westeurope
+location_code: we
+group: ntw
+# Aggregates used in vnet
+address_prefixes_cidr: 
+- 172.16.0.0/18
+# Subnet and route tables
+subnets_list:
+- subnet1:
+  name: 'subnet1'
+  subnet: '172.16.1.0/24'
+- subnet2:
+  name: 'subnet2'
+  subnet: '172.16.2.0/24'
+- subnet3:
+  name: 'subnet3'
+  subnet: '172.16.3.0/24'

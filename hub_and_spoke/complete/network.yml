@@ -111,10 +111,10 @@
       resource_group: "{{ resource_group_var }}"
     with_items:  "{{ subnets_list }}"
 
-  - name: Networks | Add appliance routes to K8S route table 
+  - name: Networks | Add appliance routes to app route table 
     vars:
       resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
-      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-k8s-1"
+      route_table_var: "rt-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-app-1"
     azure_rm_route:
       resource_group: "{{ resource_group_var }}"
       name: "{{ item.name }}"
@@ -123,7 +123,7 @@
       next_hop_ip_address: "{{ item.next_hop_ip_address }}"
       route_table_name: "{{ route_table_var }}"
       state: "{{ item.state }}"
-    with_items: '{{ route_list_k8s }}'
+    with_items: '{{ route_list_app }}'
 
   - name: Networks | Add appliance routes to INF route table 
     vars:
@@ -153,8 +153,8 @@
       local_resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
       local_vnet_var: "vn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
       local_peer_var: "pr-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-hub1-1"
-      remote_vnet_var: "vn-az-we-hub1-hndovr-ntw-1"
-      remote_resource_group_var: "rg-az-we-hub1-hndovr-ntw-1"
+      remote_vnet_var: "vn-az-we-hub1-{{ ecosystem }}-ntw-1"
+      remote_resource_group_var: "rg-az-we-hub1-{{ ecosystem }}-ntw-1"
     azure_rm_virtualnetworkpeering: 
       resource_group: "{{ local_resource_group_var }}"
       name: "{{ local_peer_var }}"
@@ -162,16 +162,16 @@
       remote_virtual_network:
         resource_group: "{{ remote_resource_group_var }}"
         name: "{{ remote_vnet_var }}"
-      allow_virtual_network_access: false
+      allow_virtual_network_access: true
       allow_forwarded_traffic: true
       #Uncomment if a Microsoft vpn gateway is deployed
       #use_remote_gateways: true
 
   - name: Networks | Create hub to spoke virtual network peering
     vars:
-      local_resource_group_var: "rg-az-we-hub1-hndovr-ntw-1"
-      local_vnet_var: "vn-az-we-hub1-hndovr-ntw-1"
-      local_peer_var: "pr-az-we-hub1-hndovr-{{ production_state }}{{ instance }}-1"
+      local_resource_group_var: "rg-az-we-hub1-{{ ecosystem }}-ntw-1"
+      local_vnet_var: "vn-az-we-hub1-{{ ecosystem }}-ntw-1"
+      local_peer_var: "pr-az-we-hub1-{{ ecosystem }}-{{ production_state }}{{ instance }}-1"
       remote_vnet_var: "vn-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
       remote_resource_group_var: "rg-az-{{ location_code }}-{{ production_state }}{{ instance }}-{{ ecosystem }}-{{ group }}-1"
     azure_rm_virtualnetworkpeering: 
@@ -181,7 +181,7 @@
       remote_virtual_network:
         resource_group: "{{ remote_resource_group_var }}"
         name: "{{ remote_vnet_var }}"
-      allow_virtual_network_access: false
+      allow_virtual_network_access: true
       allow_forwarded_traffic: true
       #Uncomment if a Microsoft vpn gateway is deployed
       #allow_gateway_transit: true
