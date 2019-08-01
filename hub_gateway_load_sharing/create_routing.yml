@@ -1,0 +1,24 @@
+---
+- hosts: azure
+  connection: local
+  gather_facts: no
+  vars:
+    resource_group_var: "dc1-networks"
+    vnet_var: "dc1-vnets"
+    route_table_var: "office-route-table"
+  tasks:
+  - name: Create hub route tables
+    azure_rm_routetable:
+      name: "{{ route_table_var }}"
+      resource_group: "{{ resource_group_var }}"
+
+  - name: Add routes 
+    azure_rm_route:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ item.name }}"
+      address_prefix: "{{ item.address_prefix }}"
+      next_hop_type: "{{ item.next_hop_type }}"
+      next_hop_ip_address: "{{ item.next_hop_ip_address }}"
+      route_table_name: "{{ route_table_var }}"
+      state: "{{ item.state }}"
+    with_items: "{{ office_routes }}"

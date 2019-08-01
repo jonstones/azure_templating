@@ -1,20 +1,65 @@
 # General variables used throughout
 production_state: dc1
-instance: 1
 location: westeurope
-location_code: we
-group: ntw
 # Aggregates used in vnet
 address_prefixes_cidr: 
 - 172.16.0.0/18
+route_table: office-route-table
 # Subnet and route tables
 subnets_list:
 - subnet1:
   name: 'subnet1'
   subnet: '172.16.1.0/24'
+  route_table: "{{ route_table }}"
 - subnet2:
   name: 'subnet2'
   subnet: '172.16.2.0/24'
+  route_table: "{{ route_table }}"
 - subnet3:
   name: 'subnet3'
   subnet: '172.16.3.0/24'
+  route_table: "{{ route_table }}"
+# Routing
+office_routes:
+- office1: 
+  name: 'office1'
+  address_prefix: '10.1.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_1 }}'
+  state: present
+- office2: 
+  name: 'office2'
+  address_prefix: '10.2.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_2 }}'
+  state: present
+- office3: 
+  name: 'office3'
+  address_prefix: '10.3.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_1 }}'
+  state: present
+- office4: 
+  name: 'office4'
+  address_prefix: '10.4.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_2 }}'
+  state: present
+- office5: 
+  name: 'office5'
+  address_prefix: '10.5.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_1 }}'
+  state: present
+- office6: 
+  name: 'office6'
+  address_prefix: '10.6.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_2 }}'
+  state: present
+- office7: 
+  name: 'office7'
+  address_prefix: '10.7.0.0/16'
+  next_hop_type: virtual_appliance
+  next_hop_ip_address: '{{ vpn_gateway_1 }}'
+  state: present

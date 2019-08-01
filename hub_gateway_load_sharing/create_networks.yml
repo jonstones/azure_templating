@@ -5,6 +5,7 @@
   vars:
     resource_group_var: "dc1-networks"
     vnet_var: "dc1-vnets"
+    route_table_var: "office-route-table"
   tasks:
   - name: Create central resource group for networking in Azure
     azure_rm_resourcegroup:
@@ -13,9 +14,17 @@
       tags:
           env: "dc1"
 
-  - name: Create central virtual networks
+  - name: Create central virtual network
     azure_rm_virtualnetwork:
       name: "{{ vnet_var }}"
       resource_group: "{{ resource_group_var }}"
       address_prefixes_cidr: "{{ address_prefixes_cidr }}"
       dns_servers: "{{ dns_servers }}"
+
+  - name: Create central subnets within new virtual network
+    azure_rm_subnet:
+      name: "{{ item.name }}"
+      virtual_network_name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefix_cidr: "{{ item.subnet }}"
+    with_items: "{{ subnets_list }}"

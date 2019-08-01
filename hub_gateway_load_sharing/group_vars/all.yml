@@ -1,14 +1,8 @@
 # Define the deployment ecosystem centrally
 ecosystem: dc1ops
-# Backhaul Firewall Pair (vertically scaling VPN services)
-fwb_outside: '172.18.255.4'
-fwb_inside: '172.18.250.4'
-# Outbound Firewall Pair (horizontally scaling internet access)
-fwo_outside: '172.18.254.4'
-fwo_inside: '172.18.249.4'
-# Inbound Firewall Pair (horizontally scaling internet hosting)
-fwi_outside: '172.18.253.4'
-fwi_inside: '172.18.248.4'
+# VPN Gateways
+vpn_gateway_1: '172.18.0.4'
+vpn_gateway_2: '172.18.0.5'
 # Standard DNS Servers used by all devices
 dns_servers:
 - 172.18.0.41

@@ -4,13 +4,3 @@ all:
     azure:
       hosts: 
         dc1:
-    remote_offices:
-      children:
-        hosts:
-          office1:
-          office2:
-          office3:
-          office4:
-          office5:
-          office6:
-          office7:
