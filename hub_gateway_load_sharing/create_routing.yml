@@ -7,12 +7,12 @@
     vnet_var: "dc1-vnets"
     route_table_var: "office-route-table"
   tasks:
-  - name: Create hub route tables
+  - name: Create central route tables
     azure_rm_routetable:
       name: "{{ route_table_var }}"
       resource_group: "{{ resource_group_var }}"
 
-  - name: Add routes 
+  - name: Add routes to central route table 
     azure_rm_route:
       resource_group: "{{ resource_group_var }}"
       name: "{{ item.name }}"
@@ -22,3 +22,12 @@
       route_table_name: "{{ route_table_var }}"
       state: "{{ item.state }}"
     with_items: "{{ office_routes }}"
+
+  - name: Ensure central subnets are created and attach route table
+    azure_rm_subnet:
+      name: "{{ item.name }}"
+      virtual_network_name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefix_cidr: "{{ item.subnet }}"
+      route_table: "{{ item.route_table }}"
+    with_items: "{{ subnets_list }}"
