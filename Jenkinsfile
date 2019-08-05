@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'dishcloth / az_terraform_worker'
+      image 'dishcloth/az_terraform_worker:latest'
       args 'test'
     }
 

@@ -4,7 +4,7 @@ Please note the prerequisites must be met in order to run the playbook.
 
 Please also note owing to multiple python interpreters being present, the
 interpreter has been explicitly set within the ```ansible.cfg``` file, you
-may have to remove this to run thie playbook correctly on your own system.
+may have to remove this to run the playbook correctly on your own system.
 
 ## Prerequities
 
@@ -41,4 +41,12 @@ Routing can be manipulated afterwards:
 
 ```bash
 ansible-playbook -i ./inventory/networks.yml ./create_routing.yml
+```
+
+## Cleaning up after testing
+
+As all activity is within a single resource group, delete the resource group
+
+```bash
+az group delete --name dc1-networks --yes --no-wait
 ```
