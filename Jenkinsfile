@@ -12,7 +12,7 @@ pipeline {
         sh 'echo "hello world"'
       }
     }
-    stage('') {
+    stage('test1') {
       steps {
         sh 'echo "hello world"'
       }
