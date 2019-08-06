@@ -16,8 +16,8 @@ ifndef AZURE_SECRET
 endif
 	@echo "All environment variables are set"
 
-server: ## Create initialisation server and configure
-	@ansible-playbook --inventory inventory/servers.yml ./playbook.yml
+bootstrap: ## Create initialisation server and configure
+	@ansible-playbook --inventory inventory/servers.yml ./bootstrap.yml
 
 destroy: ## Destroy initialisation server
 	@az group delete --name "bootstrapper" --no-wait --yes

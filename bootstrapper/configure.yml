@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: localhost
   vars:
     git_version: "2.19.2"
     git_tarball_url: "https://github.com/git/git/archive/v{{ git_version }}.tar.gz"

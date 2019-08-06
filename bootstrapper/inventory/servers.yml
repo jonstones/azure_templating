@@ -1,6 +1,9 @@
 ---
 all:
   children:
+    bootstrap_network:
+      hosts:
+        bootstrap_net:
     bootstrap_servers:
       hosts:
         azwergctl01:
