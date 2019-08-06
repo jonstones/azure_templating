@@ -2,3 +2,6 @@ security_group_var: "azwergctl01-nsg"
 nic_var: "azwergctl01-nic"
 pip_var: "azwergctl01-pip"
 bootstrap_user: "nsheridan"
+# Sizes that can be used as variables here
+# https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-general
+vm_size: "Standard_DS1_v2"

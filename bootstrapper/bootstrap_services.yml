@@ -71,7 +71,7 @@
     azure_rm_virtualmachine:
       resource_group: "{{ resource_group_var }}"
       name: "{{ inventory_hostname }}"
-      vm_size: Standard_DS1_v2
+      vm_size: "{{ vm_size }}"
       admin_username: "{{ bootstrap_user }}"
       ssh_password_enabled: false
       ssh_public_keys:
