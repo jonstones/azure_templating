@@ -44,7 +44,6 @@
   - name: Print Subnet name of first subnet to verify parsing of subnet facts
     debug:
       msg: "{{ subnet_facts.results[0].item.name }}"
-      #msg: "{{ subnet_facts.subnets[0].id }}"
 
   - name: Create Network Security Group that allows SSH
     azure_rm_securitygroup:
@@ -77,7 +76,6 @@
       ssh_password_enabled: false
       ssh_public_keys:
         - path: /home/nsheridan/.ssh/authorized_keys
-          #key_data: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhHXWIpiXHM0R1lDSua1Z2ChqNCTXEKhOgA+dubJqJc2r+JHImEJ8RQNhLvRXRAHI6q7ifsZ9tKVXGrNZcHlq/6XMVTYKsQLpocwb/lyXjTSHZztzMHEqZt2g9atkxZdHBfl0v3ldOLvJulrxCiBHm0xPZ90ohrR3Vg/dOF4ir7CGnJli9ULsMWi8MyefoK1KtIEugnZtgq8yZePS//9jWQToSHPwL83Nz01RnUDWbEX9YxCfTNuvSakxjwbzywdmdyeJwiXfwHG4dRodp3hPW42Pll2ZiUgAMMboB+66z1CgbMfpAz9h12DuZjEcxsMf6Okuzh1xCcSmhU1xmiq55CaQJBLdS9DmoNKuEhuyVxm0b/RMVqO///bhQ3dxePhqHq4DQqjP//rhDK97JWCGFM+7pslaEbHnSIYXsVbVFnqJnYkEu0C4FIA10BiG7lJPXNkosBaRfw8WtTRBUuT15rezuw0rxvbwck8y82IOQOEv25cJt6q2GghJokkxb6IBlp2DMW2kz918wrpyBnCgSh0oF4auN7mJRHSy2T/E300Sh3hD6Ee0uGY/m5elkCkOMvM64CXb+sSWnQ0Agbk+1gSIcGDN7bX/ccEYai+fz+MBDIob68tG9W11ZcZnoo2ovMKnZr99UsmpLiyiWu0kxZUCAd5Hxvj0o10+ScD5Cew== nsheridan@shr1mac1.lan
           key_data: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
       network_interfaces: "{{ nic_var }}"
       custom_data: "{{ lookup('file', 'cloud-init.yml') }}"
@@ -95,6 +93,4 @@
 
   - name: Connect to VM on the following IP address
     debug:
-      msg: "{{ pip_facts.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}"
-      #msg: "{{ pip_facts.ansible_facts.publicipaddresses.ip_address }}"
-      #msg: "{{ subnet_facts.subnets[0].id }}"
+      msg: "Connect to boot strapper host on {{ pip_facts.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}"
