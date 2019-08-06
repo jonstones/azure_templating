@@ -20,6 +20,6 @@ write_files:
       +==========================================================================+
 
 runcmd:
-  - [git, "clone", "https://github.com/niksheridan/networkdev.git"]
-  - [ansible-playbook, "-i", "localhost", "/networkdev/configure.yml"]
-  - [rm, "-rf", "/networkdev"]
+  - [git, "clone", "https://github.com/niksheridan/azure_templating.git"]
+  - [ansible-playbook, "-i", "localhost", "azure_templating/bootstrapper/configure.yml"]
+  - [rm, "-rf", "azure_templating"]
