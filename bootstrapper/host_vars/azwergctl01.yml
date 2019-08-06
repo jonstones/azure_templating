@@ -1,0 +1,4 @@
+security_group_var: "azwergctl01-nsg"
+nic_var: "azwergctl01-nic"
+pip_var: "azwergctl01-pip"
+bootstrap_user: "nsheridan"

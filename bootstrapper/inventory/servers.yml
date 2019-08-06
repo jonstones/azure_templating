@@ -1,0 +1,7 @@
+---
+all:
+  children:
+    bootstrap_servers:
+      hosts:
+        azwergctl01:
+        azwergctl02:

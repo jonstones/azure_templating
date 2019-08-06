@@ -1,0 +1,153 @@
+---
+- hosts: all
+  vars:
+    git_version: "2.19.2"
+    git_tarball_url: "https://github.com/git/git/archive/v{{ git_version }}.tar.gz"
+    git_install_dir: "/tmp/{{ git_version }}"
+    git_sbin_path: "/usr/sbin/git"
+  become: yes
+  tasks:
+  - name: Install epel-release compiler
+    yum: name=epel-release state=present
+
+  - name: Install tcpdump
+    yum: name=tcpdump state=present
+
+  - name: Install python 3.6
+    yum: name=python36.x86_64 state=present
+
+  - name: Install python C interface
+    yum: name=libffi-devel state=present
+
+  - name: Install python development kit
+    yum: name=python-devel state=present
+
+  - name: Install openssl development kit
+    yum: name=openssl-devel state=present
+
+  - name: Install mtr
+    yum: name=mtr state=present
+
+  - name: Install nmap
+    yum: name=nmap state=present
+
+  - name: Install curl development version
+    yum: name=curl-devel state=present
+
+  - name: Install Xml parsing C library
+    yum: name=expat-devel.x86_64 state=present
+
+  - name: Install Python2.7 Pip
+    yum: name=python-pip state=present
+
+  - name: Install Python3.6 Pip
+    yum: name=python36-pip state=present
+
+  - name: Install Python Wheel
+    yum: name=python-wheel state=present
+
+  - name: Install VIM editor
+    yum: name=vim state=present
+
+  - name: Ensure NTP (for time synchronization) is installed
+    yum: name=ntp state=present
+
+  - name: Ensure NTP is running
+    service: name=ntpd state=started enabled=yes
+
+  # Install prerequiresites for latest version of git
+  - name: install the 'Development tools' package group
+    yum:
+      name: "@Development tools"
+      state: present
+  
+  - name: Install CPAN package
+    yum: name=perl-CPAN state=present
+
+  - name: Install gettext-develop package
+    yum: name=gettext-devel state=present
+
+  - name: Install perl development package
+    yum: name=perl-devel state=present
+
+  - name: Install zlib development package
+    yum: name=zlib-devel state=present
+
+  #- name: Install Microsoft Powershell Core
+  #  yum: name=powershell state=present
+
+  - name: Remove previous version of git if present
+    yum: name=git state=absent
+
+  - name: Downloading Git source 
+    get_url:
+      url: "{{ git_tarball_url }}"
+      dest: "/tmp/{{ git_version }}.tar.gz"
+    register: git_source
+  
+  - name: Unpacking Git source
+    unarchive:
+      copy: no
+      dest: /tmp/
+      src: "{{ git_source.dest }}"
+    when: git_source.changed
+    register: git_source_unpack
+
+  #- debug: msg="{{ git_source_unpack.src }}"
+
+  - name: Remove downloaded tarball
+    file:
+      state: absent
+      path: "{{ git_source_unpack.src }}"
+
+  - name: Make install git source
+    become: yes
+    shell: make install prefix=/usr
+    args:
+      chdir: "/tmp/git-{{ git_version }}"
+    #when: git_source_unpack.changed
+
+  - name: Install ansible
+    yum: name=ansible state=present
+
+  - name: Install Docker-topo
+    pip:
+      executable: pip3.6
+      name: git+https://github.com/networkop/arista-ceos-topo.git
+  
+  - name: add docker repo
+    yum_repository:
+      name: dockerrepo
+      description: Docker Repository
+      file: docker.repo
+      baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+      gpgkey: https://yum.dockerproject.org/gpg
+      gpgcheck: yes
+      enabled: yes
+  
+  - name: Install docker-engine
+    yum: name=docker-engine state=present
+  
+  - name: Start docker-engine
+    systemd:
+      state: started
+      name: docker
+  
+  - name: Add nsheridan user to docker group
+    user:
+      name: nsheridan
+      comment: nsheridan
+      group: docker
+
+  - name: Add powershell repo
+    yum_repository:
+      name: packages-microsoft-com-prod
+      description: Powershell Production Repository
+      file: prod.repo
+      baseurl: https://packages.microsoft.com/config/rhel/7/
+      gpgkey: https://packages.microsoft.com/keys/microsoft.asc 
+      gpgcheck: yes
+      enabled: yes
+
+  - name: Install Powershell
+    yum: name=powershell state=present

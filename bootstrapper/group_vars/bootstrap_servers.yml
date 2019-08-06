@@ -1,0 +1,14 @@
+resource_group_var: "bootstrapper"
+location: "uksouth"
+vnet_var: "bootstrap-vnet"
+tags: "bootstrap"
+address_prefixes_cidr: 
+- 172.19.0.0/19
+# Subnet and route tables
+subnets_list:
+- subnet1:
+  name: 'boot-1'
+  subnet: '172.19.0.0/21'
+- subnet2:
+  name: 'boot-2'
+  subnet: '172.19.8.0/24'

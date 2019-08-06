@@ -1,0 +1,100 @@
+---
+- hosts: bootstrap_servers
+  connection: local
+  gather_facts: no
+  vars:
+    resource_group_var: "bootstrapper"
+    vnet_var: "bootstrap-vnet"
+    location: "uksouth"
+    tags: "bootstrap"
+    dns_servers:
+     - 8.8.8.8
+     - 8.8.4.4
+  tasks:
+  - name: Create bootstrapper resource group
+    azure_rm_resourcegroup:
+      name: "{{ resource_group_var }}"
+      location: "{{ location }}"
+      tags:
+          env: "{{ tags }}"
+
+  - name: Create bootstrap vnet
+    azure_rm_virtualnetwork:
+      name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefixes_cidr: "{{ address_prefixes_cidr }}"
+      dns_servers: "{{ dns_servers }}"
+
+  - name: Create bootstrap subnets
+    azure_rm_subnet:
+      name: "{{ item.name }}"
+      virtual_network_name: "{{ vnet_var }}"
+      resource_group: "{{ resource_group_var }}"
+      address_prefix_cidr: "{{ item.subnet }}"
+    with_items: "{{ subnets_list }}"
+
+  - name: Get facts for subnets
+    azure_rm_subnet_facts:
+      resource_group: "{{ resource_group_var }}"
+      virtual_network_name: "{{ vnet_var }}"
+      name: "{{ item.name }}"
+    with_items: "{{ subnets_list }}"
+    register: subnet_facts
+
+  - name: Print Subnet name of first subnet to verify parsing of subnet facts
+    debug:
+      msg: "{{ subnet_facts.results[0].item.name }}"
+      #msg: "{{ subnet_facts.subnets[0].id }}"
+
+  - name: Create Network Security Group that allows SSH
+    azure_rm_securitygroup:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ security_group_var }}"
+      rules:
+        - name: SSH
+          protocol: Tcp
+          destination_port_range: 22
+          access: Allow
+          priority: 1001
+          direction: Inbound
+
+  # Note: https://docs.ansible.com/ansible/2.8/modules/azure_rm_networkinterface_module.html
+  - name: Create virtual network interface card
+    azure_rm_networkinterface:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ nic_var }}"
+      virtual_network: "{{ vnet_var }}"
+      subnet: "{{ subnet_facts.results[0].item.name }}"
+      public_ip_name: "{{ pip_var }}"
+      security_group: "{{ security_group_var }}"
+
+  - name: Create VM
+    azure_rm_virtualmachine:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ inventory_hostname }}"
+      vm_size: Standard_DS1_v2
+      admin_username: "{{ bootstrap_user }}"
+      ssh_password_enabled: false
+      ssh_public_keys:
+        - path: /home/nsheridan/.ssh/authorized_keys
+          #key_data: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhHXWIpiXHM0R1lDSua1Z2ChqNCTXEKhOgA+dubJqJc2r+JHImEJ8RQNhLvRXRAHI6q7ifsZ9tKVXGrNZcHlq/6XMVTYKsQLpocwb/lyXjTSHZztzMHEqZt2g9atkxZdHBfl0v3ldOLvJulrxCiBHm0xPZ90ohrR3Vg/dOF4ir7CGnJli9ULsMWi8MyefoK1KtIEugnZtgq8yZePS//9jWQToSHPwL83Nz01RnUDWbEX9YxCfTNuvSakxjwbzywdmdyeJwiXfwHG4dRodp3hPW42Pll2ZiUgAMMboB+66z1CgbMfpAz9h12DuZjEcxsMf6Okuzh1xCcSmhU1xmiq55CaQJBLdS9DmoNKuEhuyVxm0b/RMVqO///bhQ3dxePhqHq4DQqjP//rhDK97JWCGFM+7pslaEbHnSIYXsVbVFnqJnYkEu0C4FIA10BiG7lJPXNkosBaRfw8WtTRBUuT15rezuw0rxvbwck8y82IOQOEv25cJt6q2GghJokkxb6IBlp2DMW2kz918wrpyBnCgSh0oF4auN7mJRHSy2T/E300Sh3hD6Ee0uGY/m5elkCkOMvM64CXb+sSWnQ0Agbk+1gSIcGDN7bX/ccEYai+fz+MBDIob68tG9W11ZcZnoo2ovMKnZr99UsmpLiyiWu0kxZUCAd5Hxvj0o10+ScD5Cew== nsheridan@shr1mac1.lan
+          key_data: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+      network_interfaces: "{{ nic_var }}"
+      custom_data: "{{ lookup('file', 'cloud-init.yml') }}"
+      image:
+        offer: CentOS
+        publisher: OpenLogic
+        sku: '7-CI'
+        version: latest
+
+  - name: Get facts for the Public IP
+    azure_rm_publicipaddress_facts:
+      resource_group: "{{ resource_group_var }}"
+      name: "{{ pip_var }}"
+    register: pip_facts
+
+  - name: Connect to VM on the following IP address
+    debug:
+      msg: "{{ pip_facts.ansible_facts.azure_publicipaddresses[0].properties.ipAddress }}"
+      #msg: "{{ pip_facts.ansible_facts.publicipaddresses.ip_address }}"
+      #msg: "{{ subnet_facts.subnets[0].id }}"

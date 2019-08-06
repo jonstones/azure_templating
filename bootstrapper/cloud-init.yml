@@ -1,0 +1,25 @@
+#cloud-config
+package_upgrade: true
+hostname: azwevrmctl01
+packages:
+  - epel-release
+  - ansible
+  - git
+
+write_files:
+  - owner: root:root
+    path: /etc/motd
+    content: |
+      +==========================================================================+
+                  UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED
+      +==========================================================================+
+      You must have explicit, authorized permission to access or configure this 
+      device.  Unauthorized attempts and actions to access or use this system may
+      result in civil and/or criminal penalties.  All activities performed on this
+      device are logged and monitored.
+      +==========================================================================+
+
+runcmd:
+  - [git, "clone", "https://github.com/niksheridan/networkdev.git"]
+  - [ansible-playbook, "-i", "localhost", "/networkdev/configure.yml"]
+  - [rm, "-rf", "/networkdev"]
