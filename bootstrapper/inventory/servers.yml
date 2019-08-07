@@ -7,4 +7,4 @@ all:
     bootstrap_servers:
       hosts:
         azwergctl01:
-        azwergctl02:
+        #azwergctl02:

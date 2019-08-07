@@ -73,9 +73,6 @@
   - name: Install zlib development package
     yum: name=zlib-devel state=present
 
-  #- name: Install Microsoft Powershell Core
-  #  yum: name=powershell state=present
-
   - name: Remove previous version of git if present
     yum: name=git state=absent
 
@@ -138,16 +135,6 @@
       name: nsheridan
       comment: nsheridan
       group: docker
-
-  - name: Add powershell repo
-    yum_repository:
-      name: packages-microsoft-com-prod
-      description: Powershell Production Repository
-      file: prod.repo
-      baseurl: https://packages.microsoft.com/config/rhel/7/
-      gpgkey: https://packages.microsoft.com/keys/microsoft.asc 
-      gpgcheck: yes
-      enabled: yes
 
   - name: Install Powershell
     yum: name=powershell state=present
