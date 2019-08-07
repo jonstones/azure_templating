@@ -46,7 +46,6 @@
     debug:
       msg: "{{ subnet_facts.results[0].item.name }}"
 
-
   - name: Determine Public IP address of control machine being used
     uri: 
       url: http://ifconfig.me/ip

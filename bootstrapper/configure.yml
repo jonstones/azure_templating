@@ -112,7 +112,7 @@
       executable: pip3.6
       name: git+https://github.com/networkop/arista-ceos-topo.git
   
-  - name: add docker repo
+  - name: Add Docker Repository
     yum_repository:
       name: dockerrepo
       description: Docker Repository
@@ -135,6 +135,16 @@
       name: nsheridan
       comment: nsheridan
       group: docker
+
+  - name: Add Powershell Repository
+    yum_repository:
+      name: packages-microsoft-com-prod
+      description: Microsoft Powershell Repository
+      file: packages-microsoft-com-prod
+      baseurl: https://packages.microsoft.com/rhel/7/prod/
+      gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+      gpgcheck: yes
+      enabled: yes
 
   - name: Install Powershell
     yum: name=powershell state=present

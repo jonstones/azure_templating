@@ -1,0 +1,4 @@
+---
+# Combine Network and Service Playbooks 
+  - import_playbook: bootstrap_network.yml
+  - import_playbook: bootstrap_services.yml
