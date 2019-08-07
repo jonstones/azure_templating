@@ -45,6 +45,17 @@
     debug:
       msg: "{{ subnet_facts.results[0].item.name }}"
 
+
+  - name: Determine Public IP address of control machine being used
+    uri: 
+      url: http://ifconfig.me/ip
+      return_content: yes
+    register: ip_response
+
+  - name: Connect to VM on the following IP address
+    debug:
+      msg: Control machine IP Address being used in Network Security Group is "{{ ip_response.content }}"
+
   - name: Create Network Security Group that allows SSH
     azure_rm_securitygroup:
       resource_group: "{{ resource_group_var }}"
@@ -53,6 +64,7 @@
         - name: SSH
           protocol: Tcp
           destination_port_range: 22
+          source_address_prefix: "{{ ip_response.content }}"
           access: Allow
           priority: 1001
           direction: Inbound

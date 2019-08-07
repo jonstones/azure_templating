@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  tasks:
+    - name: Find my public ip
+      uri: 
+        url: http://ifconfig.me/ip
+        return_content: yes
+      register: ip_response
+
+    - name: Connect to VM on the following IP address
+      debug:
+        msg: "{{ ip_response.content }}"
+      register: source_ip
+
+    - name: Connect to VM on the following IP address
+      debug:
+        msg: "{{ source_ip }}"
+
+
