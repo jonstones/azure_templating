@@ -6,7 +6,7 @@
     resource_group_var: "bootstrapper"
     vnet_var: "bootstrap-vnet"
     location: "uksouth"
-    tags: "bootstrap"
+    tags_var: "bootstrap"
     dns_servers:
      - 8.8.8.8
      - 8.8.4.4
@@ -17,7 +17,7 @@
       name: "{{ resource_group_var }}"
       location: "{{ location }}"
       tags:
-          env: "{{ tags }}"
+          env: "{{ tags_var }}"
 
   - name: Create bootstrap vnet
     azure_rm_virtualnetwork:
