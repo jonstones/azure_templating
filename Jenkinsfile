@@ -1,21 +1,10 @@
 pipeline {
-  agent {
-    docker {
-      image 'apline'
-      args 'test'
+    agent { docker { image 'python:3.5.1' } }
+    stages {
+        stage('build') {
+            steps {
+                sh 'python --version'
+            }
+        }
     }
-
-  }
-  stages {
-    stage('test') {
-      steps {
-        sh 'echo "hello world"'
-      }
-    }
-    stage('test1') {
-      steps {
-        sh 'echo "hello world"'
-      }
-    }
-  }
 }
