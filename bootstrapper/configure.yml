@@ -116,7 +116,7 @@
     yum_repository:
       name: dockerrepo
       description: Docker Repository
-      file: docker.repo
+      file: docker
       baseurl: https://yum.dockerproject.org/repo/main/centos/7/
       gpgkey: https://yum.dockerproject.org/gpg
       gpgcheck: yes
@@ -140,7 +140,7 @@
     yum_repository:
       name: packages-microsoft-com-prod
       description: Microsoft Powershell Repository
-      file: packages-microsoft-com-prod
+      file: microsoft
       baseurl: https://packages.microsoft.com/rhel/7/prod/
       gpgkey: https://packages.microsoft.com/keys/microsoft.asc
       gpgcheck: yes
