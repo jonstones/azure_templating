@@ -8,52 +8,85 @@
   become: yes
   tasks:
   - name: Install epel-release compiler
-    yum: name=epel-release state=present
+    yum: 
+      name: epel-release 
+      state: present
 
   - name: Install tcpdump
-    yum: name=tcpdump state=present
+    yum: 
+      name: tcpdump 
+      state: present
 
   - name: Install python 3.6
-    yum: name=python36.x86_64 state=present
+    yum: 
+      name: python36.x86_64 
+      state: present
 
   - name: Install python C interface
-    yum: name=libffi-devel state=present
+    yum: 
+      name: libffi-devel 
+      state: present
 
   - name: Install python development kit
-    yum: name=python-devel state=present
+    yum: 
+      name: python-devel 
+      state: present
 
   - name: Install openssl development kit
-    yum: name=openssl-devel state=present
+    yum: 
+      name: openssl-devel 
+      state: present
 
   - name: Install mtr
-    yum: name=mtr state=present
+    yum: 
+      name: mtr 
+      state: present
 
   - name: Install nmap
-    yum: name=nmap state=present
+    yum: 
+      name: nmap 
+      state: present
 
   - name: Install curl development version
-    yum: name=curl-devel state=present
+    yum: 
+      name: curl-devel 
+      state: present
 
   - name: Install Xml parsing C library
-    yum: name=expat-devel.x86_64 state=present
+    yum: 
+      name: expat-devel.x86_64 
+      state: present
 
   - name: Install Python2.7 Pip
-    yum: name=python-pip state=present
+    yum: 
+      name: python-pip 
+      state: present
 
   - name: Install Python3.6 Pip
-    yum: name=python36-pip state=present
+    yum: 
+      name: python36-pip 
+      state: present
 
   - name: Install Python Wheel
-    yum: name=python-wheel state=present
+    yum: 
+      name: python-wheel 
+      state: present
 
   - name: Install VIM editor
-    yum: name=vim state=present
+    yum: 
+      name: vim 
+      state: present
 
   - name: Ensure NTP (for time synchronization) is installed
-    yum: name=ntp state=present
+    yum: 
+      name: ntp 
+      state: present
 
   - name: Ensure NTP is running
-    service: name=ntpd state=started enabled=yes
+    service: 
+      name: ntpd 
+      state: started 
+      enabled: yes
 
   # Install prerequiresites for latest version of git
   - name: install the 'Development tools' package group
@@ -62,19 +95,29 @@
       state: present
   
   - name: Install CPAN package
-    yum: name=perl-CPAN state=present
+    yum: 
+      name: perl-CPAN 
+      state: present
 
   - name: Install gettext-develop package
-    yum: name=gettext-devel state=present
+    yum: 
+      name: gettext-devel 
+      state: present
 
   - name: Install perl development package
-    yum: name=perl-devel state=present
+    yum: 
+      name: perl-devel 
+      state: present
 
   - name: Install zlib development package
-    yum: name=zlib-devel state=present
+    yum: 
+      name: zlib-devel 
+      state: present
 
   - name: Remove previous version of git if present
-    yum: name=git state=absent
+    yum: 
+      name: git 
+      state: absent
 
   - name: Downloading Git source 
     get_url:
@@ -123,7 +166,9 @@
       enabled: yes
   
   - name: Install docker-engine
-    yum: name=docker-engine state=present
+    yum: 
+      name: docker-engine 
+      state: present
   
   - name: Start docker-engine
     systemd:
@@ -147,4 +192,6 @@
       enabled: yes
 
   - name: Install Powershell
-    yum: name=powershell state=present
+    yum: 
+      name: powershell 
+      state: present

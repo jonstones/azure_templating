@@ -17,8 +17,7 @@ endif
 	@echo "All environment variables are set"
 
 bootstrap: ## Create initialisation server and configure
-	@ansible-playbook --inventory inventory/servers.yml ./bootstrap_network.yml
-	@ansible-playbook --inventory inventory/servers.yml ./bootstrap_services.yml
+	@ansible-playbook --inventory inventory/inventory.yml ./bootstrap_master.yml
 
 destroy: ## Destroy initialisation server
 	@az group delete --name "bootstrapper" --no-wait --yes
