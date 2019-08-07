@@ -32,8 +32,24 @@ The current users ssh key is read from the local disk and added to the ```author
 The ```cloud-init.yml``` is also read from the local disk, which would normally be from the directory
 within the cloned repository.
 
+## Powershell
+
+The powershell modules for azure need to be installed manually within powershell
+
+```bash
+pwsh
+```
+
+Then install the modules and login:
+
+```powershell
+Install-Module -Name Az -AllowClobber -Scope CurrentUser -Force
+Connect-AzAccount
+```
+
 ## Reference
 
 Reference links [here](https://docs.microsoft.com/en-gb/azure/virtual-machines/linux/using-cloud-init)
 
-For automatic configuration also [here](https://docs.microsoft.com/en-gb/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
+For automatic configuration also [here]
+(https://docs.microsoft.com/en-gb/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
