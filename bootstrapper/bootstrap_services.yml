@@ -76,8 +76,13 @@
       name: "{{ nic_var }}"
       virtual_network: "{{ vnet_var }}"
       subnet: "{{ subnet_facts.results[0].item.name }}"
-      public_ip_name: "{{ pip_var }}"
-      security_group: "{{ security_group_var }}"
+      security_group:
+        resource_group: "{{ resource_group_var }}"
+        name: "{{ security_group_var }}"
+      ip_configurations:
+        - name: primary
+          public_ip_name: "{{ pip_var }}"
+          primary: true
 
   - name: Create VM
     azure_rm_virtualmachine:
