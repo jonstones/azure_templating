@@ -20,6 +20,13 @@ Deleting and clearing up afterwards:
 make destroy
 ```
 
+Passwords are disabled, and SSH public keys are copied to the VM being created from the
+current user
+
+The public IP address is gleaned in teh script and passed to a security group to create
+good isolation that is intended to be modified later - or more sensibly; the bootstrap
+infrastructure is really intended to be completely destroyed after it has served it purpose.
+
 ## Notes for use
 
 This script was run on OSX with multiple versions of python installed, and therefore the python
