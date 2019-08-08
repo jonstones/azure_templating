@@ -92,7 +92,7 @@
       admin_username: "{{ bootstrap_user }}"
       ssh_password_enabled: false
       ssh_public_keys:
-        - path: /home/nsheridan/.ssh/authorized_keys
+        - path: "/home/{{ bootstrap_user }}/.ssh/authorized_keys"
           key_data: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
       network_interfaces: "{{ nic_var }}"
       custom_data: "{{ lookup('file', 'cloud-init.yml') }}"

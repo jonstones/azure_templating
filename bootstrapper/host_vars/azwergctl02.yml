@@ -1,7 +1,7 @@
 security_group_var: "{{ inventory_hostname }}-nsg"
 nic_var: "{{ inventory_hostname }}-nic"
 pip_var: "{{ inventory_hostname }}-pip"
-bootstrap_user: "nsheridan"
+bootstrap_user: "bootstrap"
 # Sizes that can be used as variables here
 # https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-general
 vm_size: "Standard_DS1_v2"
