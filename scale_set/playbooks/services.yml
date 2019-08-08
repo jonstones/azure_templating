@@ -1,0 +1,154 @@
+---
+- name: Create public IP address to be attached to the load balancer for NAT and load distribution
+  hosts: services
+  gather_facts: no
+  connection: local
+
+  vars:
+    resource_group: "{{ resource_group_name }}"
+    location: "{{ location_name }}"
+    admin_username: "{{ admin_username_var }}"
+    admin_password: whStjIjLko51rg==
+    ssh_key_var: "{{ ssh_key_data }}"
+    vmss_name: "{{ vmss_id_name }}"
+    subnet_name: "{{ subnet1_name }}"
+
+  tasks:
+  - name: Create resource Groups
+    azure_rm_resourcegroup:
+      name: "{{ resource_group }}"
+      location: "{{ location }}"
+      tags:
+        deployment: "{{ function }}"
+        service: "{{ sub_element }}"
+
+  - name: Create service public IP
+    azure_rm_publicipaddress:
+      resource_group: "{{ resource_group }}"
+      allocation_method: Static
+      name: "{{ ip_name }}"
+    register: ip_output
+    
+  - name: Create Network Security Group that allows SSH enabling administration of each Scale Set instance
+    azure_rm_securitygroup:
+      resource_group: "{{ resource_group }}"
+      name: "{{ sg_name }}"
+      rules:
+        - name: SSH
+          protocol: Tcp
+          destination_port_range: 22
+          access: Allow
+          priority: 1001
+          direction: Inbound
+        - name: NFS
+          protocol: Tcp
+          destination_port_range: 2049
+          access: Allow
+          priority: 1002
+          direction: Inbound
+      state: present
+  
+  - name: Atached Security group to Subnet
+    azure_rm_subnet:
+      resource_group: "{{ resource_group_networking }}"
+      name: "{{ subnet1_name }}"
+      address_prefix: "{{ subnet1_prefix }}"
+      virtual_network: "{{ vnet_name }}"
+      security_group:
+        name: "{{ sg_name }}"
+        resource_group: "{{ resource_group }}"
+
+  - name: Create a load balancer to deliver translation for administration and load distribution for primary services
+    azure_rm_loadbalancer:
+      name: "{{ vmss_lb_name }}"
+      location: "{{ location }}"
+      resource_group: "{{ resource_group }}"
+      public_ip: "{{ ip_name }}"
+      probe_protocol: Tcp
+      probe_port: 2049
+      probe_interval: 10
+      probe_fail_count: 3
+      protocol: Tcp
+      load_distribution: Default
+      frontend_port: 2049
+      backend_port: 2049
+      idle_timeout: 4
+      natpool_frontend_port_start: 22000
+      natpool_frontend_port_end: 22040
+      natpool_backend_port: 22
+      natpool_protocol: Tcp
+  
+  - name: Create Virtual Machine Scale Set (VMSS) consisting of linux hosts
+    azure_rm_virtualmachine_scaleset:
+      resource_group: "{{ resource_group }}"
+      name: "{{ vmss_name }}"
+      vm_size: Standard_DS1_v2
+      admin_username: "{{ admin_username }}"
+      admin_password: "{{ admin_password }}"
+      ssh_password_enabled: false
+      ssh_public_keys:
+        - path: /home/{{ admin_username_var}}/.ssh/authorized_keys
+          key_data: "{{ ssh_key_var }}"
+      capacity: 2
+      virtual_network_resource_group: "{{ resource_group_networking }}"
+      virtual_network_name: "{{ vnet_name }}"
+      subnet_name: "{{ subnet_name }}"
+      upgrade_policy: Manual
+      tier: Standard
+      managed_disk_type: Standard_LRS
+      os_disk_caching: ReadWrite
+      image:
+        offer: UbuntuServer
+        publisher: Canonical
+        sku: 16.04-LTS
+        version: latest
+      load_balancer: "{{ vmss_lb_name }}"
+      data_disks:
+        - lun: 0
+          disk_size_gb: 20
+          managed_disk_type: Standard_LRS
+          caching: ReadOnly
+        - lun: 1
+          disk_size_gb: 30
+          managed_disk_type: Standard_LRS
+          caching: ReadOnly
+    register: vmss_output
+  
+  - name: Get facts load balancer
+    azure_rm_loadbalancer_facts:
+      resource_group: "{{ resource_group }}"
+      name: "{{ vmss_lb_name }}"
+    register: lb_facts
+  
+  - name: Get facts for attached vnet
+    azure_rm_virtualnetwork_facts:
+      resource_group: "{{ resource_group_networking }}"
+      name: "{{ vnet_name }}"
+    register: vnet_facts
+
+  - name: Get facts for attached subnet
+    azure_rm_subnet_facts:
+      resource_group: "{{ resource_group_networking }}"
+      virtual_network_name: "{{ vnet_name }}"
+      name: "{{ subnet1_name }}"
+    register: subnet_facts
+  
+  - name: Print vnet ID to verify parsing of vnet facts
+    debug:
+      msg: "{{ vnet_facts.ansible_facts.azure_virtualnetworks[0].id }}"
+
+  - name: Print Subnet ID to verify parsing of subnet facts
+    debug:
+      msg: "{{ subnet_facts.subnets[0].id }}"
+
+  - name: Show the anatomy of the load balancer
+    debug:
+      msg: "{{ lb_facts.ansible_facts.azure_loadbalancers[0].properties.inboundNatRules}}"
+  
+  - name: Show the anatomy of the Scale Set created
+    debug:
+      msg: "Scale set {{ vmss_output.ansible_facts.azure_vmss.name }} provisioned!"
+  
+  - name: Scale set can be configured by SSHing to the following IP address
+    debug:
+      msg: "Configure the cluster using {{ ip_output.state.ip_address }}, remembering to use SSH ports 22000-22040 to idenify each scaleset member"

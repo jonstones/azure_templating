@@ -1,0 +1,49 @@
+---
+all:
+  children:
+    networks:
+      hosts:
+        network1:
+          resource_group_name: azwergpnet01
+          vnet_name: azwevntstr01
+          vnet_prefix: 10.0.0.0/20
+          subnet1_name: azwesntstr01
+          subnet1_prefix: 10.0.1.0/24
+          function: storage
+          sub_element: network
+        #network2:
+        #  resource_group_name: azwergpnet01
+        #  vnet_name: azwevntstr01
+        #  vnet_prefix: 10.2.1.0/24
+        #  subnet1_name: azwesntstr02
+        #  subnet1_prefix: 10.0.2.0/24
+        #  function: storage
+    services:
+      hosts:
+        service1:
+          resource_group_name: azwergpnfs01
+          resource_group_networking: azwergpnet01
+          sg_name: azwescgnfs01
+          ip_name: azwepipnfs01
+          vmss_lb_name: azweldbnfs01
+          vmss_id_name: azwevssnfs01
+          vnet_name: azwevntstr01
+          vnet_prefix: 10.0.0.0/20
+          subnet1_name: azwesntstr01
+          subnet1_prefix: 10.0.1.0/24
+          admin_username_var: nfsuser
+          function: storage
+          sub_element: nfsservice
+        #service2:
+        #  resource_group_name: azwergpnfs02
+        #  resource_group_networking: azwergpnet01
+        #  sg_name: azwescgnfs02
+        #  ip_name: azwepipnfs02
+        #  vmss_lb_name: azweldbnfs02
+        #  vmss_id_name: azwevssnfs02
+        #  vnet_name: azwevntstr01
+        #  vnet_prefix: 10.0.0.0/20
+        #  subnet1_name: azwesntstr02
+        #  subnet1_prefix: 10.0.2.0/24
+        #  admin_username_var: nfsuser
+        #  function: storage

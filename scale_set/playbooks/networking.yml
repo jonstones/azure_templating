@@ -1,0 +1,31 @@
+---
+- name: Create VirtualNetwork
+  hosts: networks
+  gather_facts: no
+  connection: local
+
+  vars:
+   resource_group: "{{ resource_group_name }}"
+   location: "{{ location_name }}"
+
+  tasks:
+  - name: Create resource Groups
+    azure_rm_resourcegroup:
+      name: "{{ resource_group }}"
+      location: "{{ location }}"
+      tags:
+        deployment: "{{ function }}"
+        service: "{{ sub_element }}"
+
+  - name: Create virtual network
+    azure_rm_virtualnetwork:
+      resource_group: "{{ resource_group }}"
+      name: "{{ vnet_name }}"
+      address_prefixes: "{{ vnet_prefix }}"
+    
+  - name: Create subnet
+    azure_rm_subnet:
+      resource_group: "{{ resource_group }}"
+      name: "{{ subnet1_name }}"
+      address_prefix: "{{ subnet1_prefix }}"
+      virtual_network: "{{ vnet_name }}"
