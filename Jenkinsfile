@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent sh
     stages {
         stage('Test') {
             steps {
