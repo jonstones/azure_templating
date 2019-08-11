@@ -62,5 +62,4 @@ Connect-AzAccount
 
 Reference links [here](https://docs.microsoft.com/en-gb/azure/virtual-machines/linux/using-cloud-init)
 
-For automatic configuration also [here]
-(https://docs.microsoft.com/en-gb/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
+For automatic configuration also [here](https://docs.microsoft.com/en-gb/azure/virtual-machines/linux/tutorial-automate-vm-deployment)
