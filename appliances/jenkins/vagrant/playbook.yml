@@ -1,0 +1,170 @@
+---
+- hosts: all
+  vars:
+    git_version: "2.19.2"
+    git_tarball_url: "https://github.com/git/git/archive/v{{ git_version }}.tar.gz"
+    git_install_dir: "/tmp/{{ git_version }}"
+    git_sbin_path: "/usr/sbin/git"
+  become: yes
+  tasks:
+  - name: Install epel-release compiler
+    yum: 
+      name: epel-release 
+      state: present
+
+  - name: Install Network Utilties
+    yum: 
+      name: 
+        - tcpdump
+        - vim
+        - mtr
+        - nmap
+        - curl-devel 
+      state: present
+
+  - name: Install Python Development Kits
+    yum: 
+      name: 
+        - python36.x86_64
+        - libffi-devel
+        - python-devel
+        - python-pip
+        - python36-pip
+        - python-wheel
+      state: present
+
+  - name: Install Generic Development Utilities
+    yum: 
+      name: 
+        - openssl-devel
+        - curl-devel
+        - expat-devel.x86_64 
+      state: present
+
+  - name: Ensure NTP (for time synchronization) is installed
+    yum: 
+      name: ntp 
+      state: present
+
+  - name: Ensure NTP is running
+    service: 
+      name: ntpd 
+      state: started 
+      enabled: yes
+
+  # Install prerequiresites for latest version of git
+  - name: install git compilation prerequisites
+    yum:
+      name: 
+        - "@Development tools"
+        - perl-CPAN 
+        - gettext-devel
+        - perl-devel
+        - zlib-devel
+      state: present
+
+  - name: Remove previous version of git if present
+    yum: 
+      name: git 
+      state: absent
+
+  - name: Downloading Git source 
+    get_url:
+      url: "{{ git_tarball_url }}"
+      dest: "/tmp/{{ git_version }}.tar.gz"
+    register: git_source
+  
+  - name: Unpacking Git source
+    unarchive:
+      copy: no
+      dest: /tmp/
+      src: "{{ git_source.dest }}"
+    when: git_source.changed
+    register: git_source_unpack
+
+  #- debug: msg="{{ git_source_unpack.src }}"
+
+  - name: Remove downloaded tarball
+    file:
+      state: absent
+      path: "{{ git_source_unpack.src }}"
+
+  - name: Make install git source
+    become: yes
+    shell: make install prefix=/usr
+    args:
+      chdir: "/tmp/git-{{ git_version }}"
+    #when: git_source_unpack.changed
+
+  - name: Install ansible
+    yum: 
+      name: ansible
+      state: present
+  
+  - name: Add Docker Repository
+    yum_repository:
+      name: dockerrepo
+      description: Docker Repository
+      file: docker
+      baseurl: https://yum.dockerproject.org/repo/main/centos/7/
+      gpgkey: https://yum.dockerproject.org/gpg
+      gpgcheck: yes
+      enabled: yes
+  
+  - name: Install Docker Engine
+    yum: 
+      name: docker-engine 
+      state: present
+  
+  - name: Start Docker Engine
+    systemd:
+      state: started
+      name: docker
+  
+  - name: Add nsheridan user to docker group
+    user:
+      name: nsheridan
+      comment: nsheridan
+      group: docker
+
+  - name: Add Powershell Repository
+    yum_repository:
+      name: packages-microsoft-com-prod
+      description: Microsoft Powershell Repository
+      file: microsoft
+      baseurl: https://packages.microsoft.com/rhel/7/prod/
+      gpgkey: https://packages.microsoft.com/keys/microsoft.asc
+      gpgcheck: yes
+      enabled: yes
+
+  - name: Install Powershell
+    yum: 
+      name: powershell 
+      state: present
+
+  - name: Install Java
+    yum: 
+      name:
+        - java 
+      state: present
+
+  - name: Add Jenkins Repository
+    yum_repository:
+      name: jenkins-repo
+      description: Jenkins repo
+      file: jenkins
+      baseurl: https://pkg.jenkins.io/redhat-stable/
+      gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+      gpgcheck: yes
+      enabled: yes
+
+  - name: Install Jenkins
+    yum: 
+      name: jenkins 
+      state: present
+
+  - name: Emable and Start Jenkins
+    systemd:
+      name: jenkins
+      state: started 
+      enabled: yes
