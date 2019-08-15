@@ -1,15 +1,21 @@
 pipeline {
-  agent any
-  stages {
-    #stage('Approval') {
-    #  steps {
-    #    input "Approve this change?"
-    #  }
-    #}
-    stage('Build') {
-      steps {
-        echo 'I am building'
-      }
+    agent none
+    stages {
+        stage('Back-end') {
+            agent {
+                docker { image 'maven:3-alpine' }
+            }
+            steps {
+                sh 'mvn --version'
+            }
+        }
+        stage('Front-end') {
+            agent {
+                docker { image 'node:7-alpine' }
+            }
+            steps {
+                sh 'node --version'
+            }
+        }
     }
-  }
 }
